@@ -8,6 +8,9 @@ const ll INF = 987'654'321;
 
 struct Node {
     ll last_time, counter_id, uid;
+
+    Node() : last_time(0), counter_id(0), uid(0) {}
+    Node(ll t, ll c, ll u) : last_time(t), counter_id(c), uid(u) {}
 };
 
 struct compare {
@@ -40,23 +43,21 @@ int main() {
 
     priority_queue<Node, vector<Node>, compare> q;
     for (int i = 0; i < m; ++i) {
-        q.push({0, i, -1});
+        q.emplace(0, i, -1);
     }
 
-    // uid
     vector<Node> out_info;
+    out_info.reserve(n);
     for (int i = 0; i < n; ++i) {
         ll uid, items;
         cin >> uid >> items;
 
-        ll top = q.top().last_time;
-        ll counter_id = q.top().counter_id;
-        ll prev_uid = q.top().uid;
+        const Node node = q.top();
+        ll out_time = node.last_time + items;
         q.pop();
 
-        ll out_time = top + items;
-        out_info.push_back({out_time, counter_id, uid});
-        q.push({out_time, counter_id, uid});
+        out_info.emplace_back(out_time, node.counter_id, uid);
+        q.emplace(out_time, node.counter_id, uid);
     }
 
     sort(out_info.begin(), out_info.end(), out_compare);
